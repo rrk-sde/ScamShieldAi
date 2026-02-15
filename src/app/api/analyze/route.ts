@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.error('Analyze API Error:', error);
         return NextResponse.json(
-            { error: 'Failed to analyze message' },
+            { error: 'Failed to analyze message', details: (error as any).message },
             { status: 500 }
         );
     }
