@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 ScamShield AI — 3-Minute Recording Script</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #030712;
+            --card: #0f172a;
+            --card-border: #1e293b;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.15);
+            --green: #22c55e;
+            --red: #ef4444;
+            --yellow: #eab308;
+            --purple: #a78bfa;
+            --pink: #f472b6;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            padding: 40px 20px 80px;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header .sub {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .header .badge {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 6px 18px;
+            background: var(--accent-glow);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--accent);
+        }
+
+        .total-time {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0 10px;
+        }
+
+        .total-time .t-item {
+            text-align: center;
+        }
+
+        .total-time .t-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .total-time .t-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* ===== PHASE DIVIDER ===== */
+        .phase {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 45px 0 20px;
+        }
+
+        .phase::before,
+        .phase::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--card-border), transparent);
+        }
+
+        .phase .label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        .phase .timer-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            padding: 3px 10px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 12px;
+            color: var(--purple);
+            white-space: nowrap;
+        }
+
+        /* ===== STEP CARD ===== */
+        .step {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 22px 26px;
+            margin-bottom: 18px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .step:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.06);
+        }
+
+        .step-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .step-num {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .step-num .n {
+            color: var(--accent);
+        }
+
+        .step-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            padding: 4px 12px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            color: var(--purple);
+        }
+
+        /* Action line */
+        .action {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 8px 14px;
+            margin-bottom: 10px;
+            background: rgba(34, 197, 94, 0.06);
+            border: 1px solid rgba(34, 197, 94, 0.15);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .action .emoji {
+            flex-shrink: 0;
+        }
+
+        /* Narration block */
+        .narration {
+            padding: 16px 20px;
+            background: rgba(59, 130, 246, 0.04);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 10px 10px 0;
+            font-size: 0.92rem;
+            color: #e2e8f0;
+            line-height: 1.8;
+        }
+
+        .narration strong {
+            color: #93c5fd;
+        }
+
+        /* Copy box */
+        .copy-box {
+            margin: 12px 0;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.84rem;
+            color: #fbbf24;
+            line-height: 1.6;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .copy-box::after {
+            content: '📋 Click to copy';
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .copy-box.copied::after {
+            content: '✅ Copied!';
+            color: var(--green);
+        }
+
+        .sender-tag {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--red);
+        }
+
+        /* ===== CHEAT SHEET TABLE ===== */
+        .cheat-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 50px 0 16px;
+            text-align: center;
+            color: var(--text);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--card-border);
+        }
+
+        td:first-child {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--purple);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        tr:hover td {
+            background: rgba(59, 130, 246, 0.03);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 24px;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-dim);
+            font-size: 0.82rem;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .step {
+                padding: 16px 18px;
+            }
+
+            .narration {
+                font-size: 0.85rem;
+                padding: 12px 14px;
+            }
+
+            .phase .label {
+                font-size: 0.72rem;
+            }
+
+            table {
+                font-size: 0.78rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="icon">🎬</div>
+            <h1>ScamShield AI — Recording Script</h1>
+            <p class="sub">3-Minute Video Walkthrough for Vibe-A-Thon 2026 Submission</p>
+            <div class="badge">⏱ Total Duration: 3:00</div>
+        </div>
+
+        <div class="total-time">
+            <div class="t-item">
+                <div class="t-num">3</div>
+                <div class="t-label">Parts</div>
+            </div>
+            <div class="t-item">
+                <div class="t-num">9</div>
+                <div class="t-label">Steps</div>
+            </div>
+            <div class="t-item">
+                <div class="t-num">3:00</div>
+                <div class="t-label">Minutes</div>
+            </div>
+        </div>
+
+        <!-- ======================== PART 1 ======================== -->
+        <div class="phase">
+            <span class="label">⏱️ Part 1 — Introduction & Citizen Flow</span>
+            <span class="timer-badge">0:00 – 1:00</span>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 1</span> — Open Landing Page</div>
+                <div class="step-timer">0:00 – 0:20</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Open browser → go to localhost:3000</div>
+            <div class="narration">
+                "Hi! I'm <strong>Rajeev</strong> from <strong>Codebucket Solutions</strong>.
+                <br><br>
+                This is <strong>ScamShield AI</strong> — an AI-powered platform that helps Indian citizens detect
+                digital scams in real-time.
+                <br><br>
+                Every day, millions of Indians receive suspicious messages on WhatsApp, Email, and SMS — fake KYC
+                alerts, lottery scams, digital arrest threats. Most people can't tell what's real and what's a scam."
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 2</span> — Scroll & Introduce Analyzer</div>
+                <div class="step-timer">0:20 – 0:30</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Scroll slowly to show feature cards and the
+                analyzer section → Click "Email" message type</div>
+            <div class="narration">
+                "With ScamShield, any citizen can simply paste a suspicious message and our AI will instantly tell them
+                if it's a scam, why it's a scam, and what to do about it.
+                <br><br>
+                Let me demo this. I'll select 'Email' as the message type — notice how an extra <strong>Sender
+                    Email</strong> field appears. This helps our AI verify if the sender domain is legitimate or
+                spoofed."
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 3</span> — Paste Scam Message & Analyze</div>
+                <div class="step-timer">0:30 – 1:00</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Paste the scam message below into the text area
+            </div>
+            <div class="copy-box"
+                onclick="copyText(this, 'Dear customer, your SBI account has been blocked. Click http://sbi-verify.xyz to update your KYC immediately or your account will be permanently closed within 24 hours.')">
+                Dear customer, your SBI account has been blocked. Click http://sbi-verify.xyz to update your KYC
+                immediately or your account will be permanently closed within 24 hours.</div>
+            <div class="action"><span class="emoji">✉️</span> SENDER EMAIL: <span
+                    class="sender-tag">alert@sbi-verify.xyz</span></div>
+            <div class="action"><span class="emoji">📝</span> Fill: Name = "Demo User" &nbsp;|&nbsp; Email =
+                "demo@test.com" &nbsp;|&nbsp; Phone = "9999999999" → Click "Analyze"</div>
+            <div class="narration">
+                "I'm pasting a fake SBI banking email. Notice the suspicious URL <strong>sbi-verify.xyz</strong> and the
+                sender domain — not the official sbi.co.in. I'll hit Analyze."
+            </div>
+        </div>
+
+        <!-- ======================== PART 2 ======================== -->
+        <div class="phase">
+            <span class="label">🧠 Part 2 — AI Intelligence & FIR</span>
+            <span class="timer-badge">1:00 – 2:00</span>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 4</span> — Show AI Results</div>
+                <div class="step-timer">1:00 – 1:30</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Scroll through the results slowly — verdict,
+                confidence, patterns</div>
+            <div class="narration">
+                "In just seconds, our AI analyzed this through <strong>seven specialized detection modules</strong> —
+                grammar analysis, social engineering, financial fraud, urgency tactics, and more.
+                <br><br>
+                It correctly identified this as a <strong>high-risk banking fraud scam</strong> with over 90%
+                confidence. It detected the fake URL, the unofficial sender domain, and the false urgency."
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 5</span> — Scam Patterns & FIR Draft</div>
+                <div class="step-timer">1:30 – 2:00</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Scroll to show scam patterns → then scroll to the
+                FIR Draft section</div>
+            <div class="narration">
+                "It lists the exact scam patterns found — fake urgency, suspicious links, domain spoofing. It even gives
+                a <strong>safe reply</strong> the citizen can send back.
+                <br><br>
+                Most importantly, it auto-generates a <strong>legal FIR draft</strong> — a First Information Report
+                ready for Indian cyber crime authorities. This includes the case details, evidence, and applicable IPC
+                and IT Act sections. The citizen can directly use this to file a complaint on
+                <strong>cybercrime.gov.in</strong> or call the national helpline <strong>1930</strong>."
+            </div>
+        </div>
+
+        <!-- ======================== PART 3 ======================== -->
+        <div class="phase">
+            <span class="label">🏛️ Part 3 — Department Portal</span>
+            <span class="timer-badge">2:00 – 3:00</span>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 6</span> — Login as Cyber Official</div>
+                <div class="step-timer">2:00 – 2:15</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Click "Department Portal" in navbar → Click the
+                Admin credential card → Login</div>
+            <div class="narration">
+                "Now let's see the <strong>Department Portal</strong> — built for cyber crime officials. I'll login as
+                an Admin."
+            </div>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 7</span> — Dashboard Overview</div>
+                <div class="step-timer">2:15 – 2:30</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Show dashboard → stats cards → charts → scroll to
+                Recent Cases</div>
+            <div class="narration">
+                "Officials get a real-time dashboard with total cases, risk distribution, and scam trend analytics."
+            </div>
+        </div>
+
+        <!-- Step 8 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 8</span> — Cases Table & Case Detail</div>
+                <div class="step-timer">2:30 – 2:50</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Point out Flag & Sender columns → Click "View" on
+                any case → Show detail page</div>
+            <div class="narration">
+                "Every case has a visual <strong>risk flag</strong> — red shield for confirmed scams, green for safe,
+                yellow for suspicious. The <strong>sender email column</strong> helps officials quickly spot spoofed
+                domains.
+                <br><br>
+                They can drill into any case — see the full AI analysis, the original message, and the auto-generated
+                FIR. Officials can update the status, add internal notes, and manage the case lifecycle from open to
+                resolved."
+            </div>
+        </div>
+
+        <!-- Step 9 -->
+        <div class="step">
+            <div class="step-head">
+                <div class="step-num"><span class="n">Step 9</span> — Closing</div>
+                <div class="step-timer">2:50 – 3:00</div>
+            </div>
+            <div class="action"><span class="emoji">🖱</span> ACTION: Briefly scroll the case detail page</div>
+            <div class="narration">
+                "ScamShield AI was built entirely with <strong>AI-assisted development</strong> — using Next.js 14,
+                MongoDB, and Google Gemini AI. Seven detection modules, false-positive prevention, auto FIR generation,
+                and a full department management system — all built in one day at Vibe-A-Thon 2026.
+                <br><br>
+                Thank you! Stay safe, stay shielded. 🛡️"
+            </div>
+        </div>
+
+        <!-- ======================== CHEAT SHEET ======================== -->
+        <div class="cheat-title">📋 Quick Cheat Sheet</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>What You're Showing</th>
+                    <th>What You're Saying</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0:00–0:20</td>
+                    <td>Landing page hero</td>
+                    <td>Intro + problem statement</td>
+                </tr>
+                <tr>
+                    <td>0:20–0:30</td>
+                    <td>Scroll to analyzer</td>
+                    <td>"Any citizen can paste a message..."</td>
+                </tr>
+                <tr>
+                    <td>0:30–1:00</td>
+                    <td>Paste scam message + click Analyze</td>
+                    <td>Demo the email scam test</td>
+                </tr>
+                <tr>
+                    <td>1:00–1:30</td>
+                    <td>Scroll through results</td>
+                    <td>7 detection modules, patterns found</td>
+                </tr>
+                <tr>
+                    <td>1:30–2:00</td>
+                    <td>Show FIR Draft</td>
+                    <td>Auto-generated legal complaint</td>
+                </tr>
+                <tr>
+                    <td>2:00–2:15</td>
+                    <td>Login to Department Portal</td>
+                    <td>Admin login demo</td>
+                </tr>
+                <tr>
+                    <td>2:15–2:30</td>
+                    <td>Dashboard stats & charts</td>
+                    <td>Real-time analytics overview</td>
+                </tr>
+                <tr>
+                    <td>2:30–2:50</td>
+                    <td>Cases table + case detail</td>
+                    <td>Risk flags, sender emails, case management</td>
+                </tr>
+                <tr>
+                    <td>2:50–3:00</td>
+                    <td>Case detail page</td>
+                    <td>Tech stack + closing</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p><strong>ScamShield AI</strong> — Vibe-A-Thon 2026 • Codebucket Solutions Pvt. Ltd.</p>
+            <p style="margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;">Generated: 15 Feb
+                2026</p>
+        </div>
+
+    </div>
+
+    <script>
+        function copyText(el, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                el.classList.add('copied');
+                setTimeout(() => el.classList.remove('copied'), 2000);
+            });
+        }
+    </script>
+
+</body>
+
+</html>
