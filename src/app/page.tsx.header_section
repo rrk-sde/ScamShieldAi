@@ -1,0 +1,70 @@
+      {/* =============================================
+          CYBER AWARENESS
+          ============================================= */}
+      <section style={{
+        maxWidth: 1000, margin: '0 auto', padding: '0 16px clamp(40px, 6vw, 80px)',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <h2 className="font-display" style={{
+            fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: 800, marginBottom: 12,
+          }}>
+            <span className="gradient-text">Awareness</span> Corner
+          </h2>
+          <p style={{ fontSize: 'clamp(14px, 1.8vw, 16px)', color: 'var(--text-secondary)', maxWidth: 600, margin: '0 auto' }}>
+            Stay informed and protected with official resources from Indian Cybercrime Coordination Centre (I4C).
+          </p>
+        </div>
+
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: 20,
+        }}>
+          {[
+            {
+              title: 'Citizen Manual',
+              desc: 'Comprehensive guide on using the reporting portal and understanding investigation workflows.',
+              icon: BookOpen,
+              color: '#F59E0B',
+            },
+            {
+              title: 'Cyber Safety Tips',
+              desc: 'Best practices to secure your devices, banking details, and social media accounts.',
+              icon: ShieldCheck,
+              color: '#10B981',
+            },
+            {
+              title: 'Cyber Awareness',
+              desc: 'Educational modules on identifying threats like phishing, malware, and social engineering.',
+              icon: Monitor,
+              color: '#22D3EE',
+            },
+            {
+              title: 'Daily Digest',
+              desc: 'Latest modus operandi alerts and fraud trends analyzed by cyber experts.',
+              icon: FileText,
+              color: '#8B5CF6',
+            },
+          ].map((item) => (
+            <div key={item.title} className="glass-card hover-lift" style={{
+              padding: 24, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center',
+              borderTop: `3px solid ${item.color}`, transition: 'transform 0.2s',
+            }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: 12, marginBottom: 16,
+                background: `${item.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <item.icon size={24} style={{ color: item.color }} />
+              </div>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: 'var(--text-primary)' }}>{item.title}</h3>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, flex: 1 }}>{item.desc}</p>
+              <button className="btn-ghost" style={{ marginTop: 16, fontSize: 12, color: item.color, display: 'flex', alignItems: 'center', gap: 4 }}>
+                Read More <ArrowRight size={12} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* =============================================
+          IMPORTANT RESOURCES
+          ============================================= */}
