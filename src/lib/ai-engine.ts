@@ -1,8 +1,46 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+// Initialize Clients
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+
+// Helper to get completion from either provider
+async function getCompletion(prompt: string, jsonMode: boolean = false, systemPrompt: string = ''): Promise<string> {
+    // 1. Try Gemini (Priority: Free/Fast)
+    if (genAI) {
+        try {
+            const model = genAI.getGenerativeModel({
+                model: "gemini-1.5-flash",
+                generationConfig: { responseMimeType: jsonMode ? "application/json" : "text/plain" }
+            });
+
+            const fullPrompt = systemPrompt ? `${systemPrompt}\n\n${prompt}` : prompt;
+            const result = await model.generateContent(fullPrompt);
+            return result.response.text();
+        } catch (error) {
+            console.error("Gemini Error (Falling back if possible):", error);
+        }
+    }
+
+    // 2. Try OpenAI
+    if (openai) {
+        const messages: any[] = [];
+        if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+        messages.push({ role: 'user', content: prompt });
+
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: messages,
+            response_format: jsonMode ? { type: "json_object" } : undefined,
+            temperature: 0.3,
+        });
+        return response.choices[0]?.message?.content || '';
+    }
+
+    throw new Error("No valid AI API Key configured. Set GEMINI_API_KEY or OPENAI_API_KEY in .env.local");
+}
 
 export interface ScamAnalysisResult {
     isScam: boolean;
@@ -58,20 +96,9 @@ Be thorough in identifying:
 - Requests to move to different platforms (WhatsApp, Telegram)`;
 
     try {
-        const response = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are a cybercrime analysis AI. Always respond with valid JSON only.',
-                },
-                { role: 'user', content: prompt },
-            ],
-            temperature: 0.3,
-            max_tokens: 2000,
-        });
+        const content = await getCompletion(prompt, true, 'You are a cybercrime analysis AI. Always respond with valid JSON only.');
 
-        const content = response.choices[0]?.message?.content || '{}';
+        // const content = response.choices[0]?.message?.content || '{}'; // Removed direct OpenAI call
         const cleanedContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         return JSON.parse(cleanedContent) as ScamAnalysisResult;
     } catch (error) {
@@ -141,20 +168,9 @@ Under Section 66C/66D of Information Technology Act, 2000
 Make it professional, thorough, and legally appropriate for Indian cyber crime jurisdiction.`;
 
     try {
-        const response = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
-            messages: [
-                {
-                    role: 'system',
-                    content: 'You are a legal document drafting AI specializing in Indian cyber crime FIRs.',
-                },
-                { role: 'user', content: prompt },
-            ],
-            temperature: 0.4,
-            max_tokens: 3000,
-        });
+        return await getCompletion(prompt, false, 'You are a legal document drafting AI specializing in Indian cyber crime FIRs.');
 
-        return response.choices[0]?.message?.content || 'FIR draft generation failed. Please contact cyber cell directly.';
+        // return response.choices[0]?.message?.content || 'FIR draft generation failed.';
     } catch (error) {
         console.error('FIR Generation Error:', error);
         return generateFallbackFIR(analysis, originalMessage, messageType, submitterName);
