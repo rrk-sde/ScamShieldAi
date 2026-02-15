@@ -332,13 +332,27 @@ export default function DepartmentDashboard() {
                                     <BarChart3 size={20} style={{ color: 'var(--accent-primary)' }} />
                                     Scam Categories
                                 </h3>
-                                <ResponsiveContainer width="100%" height={280}>
-                                    <BarChart data={analytics.categoryDistribution} layout="vertical">
+                                <ResponsiveContainer width="100%" height={380}>
+                                    <BarChart data={analytics.categoryDistribution} layout="vertical" margin={{ left: 10, right: 20 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(99, 102, 241, 0.1)" />
-                                        <XAxis type="number" tick={{ fill: '#CBD5E1', fontSize: 11 }} />
-                                        <YAxis dataKey="name" type="category" width={160} tick={{ fill: '#E2E8F0', fontSize: 11, fontWeight: 500 }} />
+                                        <XAxis type="number" tick={{ fill: '#CBD5E1', fontSize: 11 }} allowDecimals={false} />
+                                        <YAxis
+                                            dataKey="name"
+                                            type="category"
+                                            width={150}
+                                            tick={(props: any) => {
+                                                const label = props.payload.value.length > 20
+                                                    ? props.payload.value.substring(0, 18) + '…'
+                                                    : props.payload.value;
+                                                return (
+                                                    <text x={props.x - 4} y={props.y} textAnchor="end" dominantBaseline="middle" fill="#E2E8F0" fontSize={11} fontWeight={500}>
+                                                        {label}
+                                                    </text>
+                                                );
+                                            }}
+                                        />
                                         <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 8, color: 'var(--text-primary)' }} />
-                                        <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                                        <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={22}>
                                             {analytics.categoryDistribution.map((_, idx) => (
                                                 <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
                                             ))}
@@ -460,16 +474,16 @@ export default function DepartmentDashboard() {
                                 <table className="data-table">
                                     <thead>
                                         <tr>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">
+                                            <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--accent-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                                 Flag
                                             </th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">
+                                            <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--accent-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                                 Case ID
                                             </th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">
+                                            <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--accent-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                                 Sender
                                             </th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">
+                                            <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--accent-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                                 Submitted By
                                             </th>
                                             <th>Category</th>
@@ -483,37 +497,37 @@ export default function DepartmentDashboard() {
                                     <tbody>
                                         {cases.map((c) => (
                                             <tr key={c._id}>
-                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                                                     {c.analysis.riskLevel === 'critical' || c.analysis.riskLevel === 'high' ? (
-                                                        <div className="flex items-center text-red-400" title="High Risk / Scam">
-                                                            <ShieldAlert size={18} className="mr-1" />
-                                                            <span className="text-xs font-bold">SCAM</span>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#f87171' }} title="High Risk / Scam">
+                                                            <ShieldAlert size={18} />
+                                                            <span style={{ fontSize: 11, fontWeight: 700 }}>SCAM</span>
                                                         </div>
                                                     ) : c.fraudCategory === 'Legitimate Notification' ? (
-                                                        <div className="flex items-center text-green-400" title="Safe / Verified">
-                                                            <ShieldCheck size={18} className="mr-1" />
-                                                            <span className="text-xs font-bold">SAFE</span>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#4ade80' }} title="Safe / Verified">
+                                                            <ShieldCheck size={18} />
+                                                            <span style={{ fontSize: 11, fontWeight: 700 }}>SAFE</span>
                                                         </div>
                                                     ) : (
-                                                        <div className="flex items-center text-yellow-400" title="Potential Risk">
-                                                            <AlertTriangle size={18} className="mr-1" />
-                                                            <span className="text-xs font-bold">RISK</span>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#facc15' }} title="Potential Risk">
+                                                            <AlertTriangle size={18} />
+                                                            <span style={{ fontSize: 11, fontWeight: 700 }}>RISK</span>
                                                         </div>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-[var(--text-secondary)]">
+                                                <td style={{ padding: '12px 16px', whiteSpace: 'nowrap', fontSize: 13, fontFamily: "'JetBrains Mono', monospace", color: 'var(--text-secondary)' }}>
                                                     {c.caseId}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                                <td style={{ padding: '12px 16px', whiteSpace: 'nowrap', fontSize: 13 }}>
                                                     {c.senderEmail ? (
-                                                        <span className="font-mono text-xs bg-[var(--bg-secondary)] px-2 py-1 rounded border border-[var(--border)]">
+                                                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, background: 'var(--bg-secondary)', padding: '3px 8px', borderRadius: 4, border: '1px solid var(--border-color)' }}>
                                                             {c.senderEmail}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-[var(--text-muted)]">-</span>
+                                                        <span style={{ color: 'var(--text-muted)' }}>—</span>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                                <td style={{ padding: '12px 16px', whiteSpace: 'nowrap', fontSize: 13, color: 'var(--text-primary)' }}>
                                                     {c.submittedBy}
                                                 </td>
                                                 <td style={{ fontSize: 13 }}>{c.analysis.fraudCategory}</td>
@@ -647,15 +661,39 @@ export default function DepartmentDashboard() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
                             <div className="glass-card" style={{ padding: 28 }}>
                                 <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20 }}>📊 Fraud Category Breakdown</h3>
-                                <ResponsiveContainer width="100%" height={300}>
+                                <ResponsiveContainer width="100%" height={320}>
                                     <RechartsPieChart>
                                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                        <Pie data={analytics.categoryDistribution} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={(props: any) => `${props.name || ''} (${((props.percent || 0) * 100).toFixed(0)}%)`}>
+                                        <Pie
+                                            data={analytics.categoryDistribution}
+                                            cx="50%"
+                                            cy="42%"
+                                            innerRadius={55}
+                                            outerRadius={100}
+                                            dataKey="value"
+                                            label={false}
+                                            labelLine={false}
+                                            paddingAngle={2}
+                                            stroke="rgba(3, 7, 18, 0.6)"
+                                            strokeWidth={2}
+                                        >
                                             {analytics.categoryDistribution.map((_, idx) => (
                                                 <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
                                             ))}
                                         </Pie>
-                                        <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 8, color: 'var(--text-primary)' }} />
+                                        <Tooltip
+                                            contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 8, color: 'var(--text-primary)' }}
+                                            formatter={(value: number, name: string) => [`${value} cases`, name]}
+                                        />
+                                        <Legend
+                                            layout="horizontal"
+                                            verticalAlign="bottom"
+                                            align="center"
+                                            iconType="circle"
+                                            iconSize={8}
+                                            wrapperStyle={{ fontSize: 11, color: '#CBD5E1', paddingTop: 12 }}
+                                            formatter={(value: string) => value.length > 22 ? value.substring(0, 20) + '…' : value}
+                                        />
                                     </RechartsPieChart>
                                 </ResponsiveContainer>
                             </div>

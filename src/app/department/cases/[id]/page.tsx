@@ -66,6 +66,12 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
     const [newNote, setNewNote] = useState('');
     const [updating, setUpdating] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState('');
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info'; visible: boolean }>({ message: '', type: 'success', visible: false });
+
+    const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+        setToast({ message, type, visible: true });
+        setTimeout(() => setToast(prev => ({ ...prev, visible: false })), 3500);
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('scamshield_token');
@@ -92,7 +98,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
         }
     };
 
-    const updateCase = async (updates: Record<string, string>) => {
+    const updateCase = async (updates: Record<string, string>, successMsg?: string) => {
         setUpdating(true);
         try {
             const res = await fetch(`/api/cases/${id}`, {
@@ -103,17 +109,20 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
             const data = await res.json();
             if (data.case) {
                 setCaseData(data.case);
+                if (successMsg) showToast(successMsg, 'success');
             }
         } catch (error) {
             console.error('Failed to update case:', error);
+            showToast('Failed to update case. Please try again.', 'error');
         } finally {
             setUpdating(false);
         }
     };
 
     const handleStatusChange = (newStatus: string) => {
+        const label = STATUS_OPTIONS.find(s => s.value === newStatus)?.label || newStatus;
         setSelectedStatus(newStatus);
-        updateCase({ status: newStatus });
+        updateCase({ status: newStatus }, `✅ Status updated to "${label}"`);
     };
 
     const handleAddNote = () => {
@@ -122,7 +131,7 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
         updateCase({
             internalNote: newNote,
             noteAddedBy: user.name || 'Unknown Officer',
-        });
+        }, '📝 Internal note added successfully');
         setNewNote('');
     };
 
@@ -485,6 +494,39 @@ export default function CaseDetailPage({ params }: { params: Promise<{ id: strin
                     </div>
                 </div>
             </div>
+
+            {/* Toast Notification */}
+            {toast.visible && (
+                <div style={{
+                    position: 'fixed',
+                    top: 24,
+                    right: 24,
+                    zIndex: 9999,
+                    padding: '16px 24px',
+                    borderRadius: 12,
+                    background: toast.type === 'success'
+                        ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95))'
+                        : toast.type === 'error'
+                            ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(185, 28, 28, 0.95))'
+                            : 'linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95))',
+                    color: 'white',
+                    fontSize: 14,
+                    fontWeight: 600,
+                    fontFamily: "'Inter', sans-serif",
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(16px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    animation: 'slide-in-right 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
+                    maxWidth: 400,
+                }}>
+                    {toast.type === 'success' && <CheckCircle2 size={20} />}
+                    {toast.type === 'error' && <XCircle size={20} />}
+                    {toast.type === 'info' && <Clock size={20} />}
+                    {toast.message}
+                </div>
+            )}
         </div>
     );
 }
