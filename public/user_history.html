@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield AI — Complete Prompt History</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            --bg: #030712;
+            --card-bg: #111827;
+            --timeline-line: #1e3a5f;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.3);
+            --green: #22c55e;
+            --red: #ef4444;
+            --yellow: #eab308;
+            --purple: #a78bfa;
+            --text: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .header .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .header .badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 16px;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat .num {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Phase Separator */
+        .phase {
+            text-align: center;
+            margin: 40px 0 25px;
+            position: relative;
+        }
+
+        .phase::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+        }
+
+        .phase span {
+            position: relative;
+            background: var(--bg);
+            padding: 0 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 35px;
+            border-left: 2px solid var(--timeline-line);
+        }
+
+        .item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .dot {
+            position: absolute;
+            left: -42px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 3px solid var(--bg);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .dot.blue {
+            background: var(--accent);
+        }
+
+        .dot.green {
+            background: var(--green);
+        }
+
+        .dot.red {
+            background: var(--red);
+        }
+
+        .dot.yellow {
+            background: var(--yellow);
+        }
+
+        .dot.purple {
+            background: var(--purple);
+        }
+
+        .timestamp {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tag-setup {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .tag-feature {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .tag-fix {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .tag-ui {
+            background: rgba(167, 139, 250, 0.2);
+            color: #c4b5fd;
+        }
+
+        .tag-config {
+            background: rgba(234, 179, 8, 0.2);
+            color: #fbbf24;
+        }
+
+        .tag-debug {
+            background: rgba(251, 146, 60, 0.2);
+            color: #fb923c;
+        }
+
+        .tag-docs {
+            background: rgba(14, 165, 233, 0.2);
+            color: #38bdf8;
+        }
+
+        .content {
+            background: var(--card-bg);
+            padding: 18px 22px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .content:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .prompt-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .context-note {
+            font-size: 0.8rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(99, 102, 241, 0.08);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .error-note {
+            color: #f87171;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            opacity: 0.85;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-bar {
+                gap: 16px;
+            }
+
+            .stat .num {
+                font-size: 1.4rem;
+            }
+
+            .timeline {
+                padding-left: 25px;
+            }
+
+            .dot {
+                left: -32px;
+                width: 12px;
+                height: 12px;
+            }
+
+            .content {
+                padding: 14px 16px;
+            }
+
+            .prompt-text {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="header">
+            <h1>🛡️ ScamShield AI — Prompt History</h1>
+            <p class="subtitle">Complete development timeline from Vibe-A-Thon 2026</p>
+            <div class="badge">📅 Sunday, 15 Feb 2026 • 10:00 AM → 10:00 PM</div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="num">30+</div>
+                <div class="label">Prompts Used</div>
+            </div>
+            <div class="stat">
+                <div class="num">12</div>
+                <div class="label">Hours</div>
+            </div>
+            <div class="stat">
+                <div class="num">15+</div>
+                <div class="label">Files Created</div>
+            </div>
+            <div class="stat">
+                <div class="num">1</div>
+                <div class="label">AI Agent</div>
+            </div>
+        </div>
+
+        <!-- ==================== PHASE 1: PROJECT SETUP ==================== -->
+        <div class="phase"><span>⚙️ Phase 1 — Project Setup</span></div>
+
+        <div class="timeline">
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">10:00 AM <span class="tag tag-setup">SETUP</span></span>
+                <div class="content">
+                    <div class="prompt-text">[Pasted Hackathon Brief + All 4 Problem Statements]
+
+                        find out best one which can be completed
+                        a winning project u should select
+                        mern stack nextjs</div>
+                    <div class="context-note">→ AI analyzed all 4 options and selected Option 4: AI Digital Scam
+                        Detection & Response Platform as the highest-impact, most completable choice.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">10:15 AM <span class="tag tag-setup">SETUP</span></span>
+                <div class="content">
+                    <div class="prompt-text">Create a new Next.js 14 project called 'scam-shield' using App Router and
+                        TypeScript. Add Tailwind CSS for styling.</div>
+                    <div class="context-note">→ Initialized project with npx create-next-app, installed mongoose,
+                        openai, bcryptjs, jsonwebtoken, lucide-react, recharts, framer-motion.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">10:45 AM <span class="tag tag-setup">SETUP</span></span>
+                <div class="content">
+                    <div class="prompt-text">Set up MongoDB connection using Mongoose. Create a 'ScamCase' schema with
+                        fields for message, type, analysis result, and report status.</div>
+                    <div class="context-note">→ Created database models, connection utility, and DepartmentUser schema.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== PHASE 2: CORE AI ENGINE ==================== -->
+        <div class="phase"><span>🧠 Phase 2 — AI Engine & APIs</span></div>
+
+        <div class="timeline">
+
+            <div class="item">
+                <div class="dot green"></div>
+                <span class="timestamp">11:30 AM <span class="tag tag-feature">FEATURE</span></span>
+                <div class="content">
+                    <div class="prompt-text">Create an AI engine in src/lib/ai-engine.ts. It should take a text message
+                        as input, classify if it's a scam, detect urgency tactics, and generate a risk score. Use OpenAI
+                        API initially.</div>
+                    <div class="context-note">→ Built AI analysis engine with scam detection, FIR draft generation, and
+                        risk scoring. Created all 7 API routes.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot green"></div>
+                <span class="timestamp">12:15 PM <span class="tag tag-feature">FEATURE</span></span>
+                <div class="content">
+                    <div class="prompt-text">Build a secure Department Login page for cyber officials. Create a
+                        Dashboard that lists all reported cases, sorted by critical risk level. Add functionality to
+                        update case status.</div>
+                    <div class="context-note">→ Full department portal with login, dashboard, case detail view, status
+                        management, and internal notes.</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== PHASE 3: DEBUGGING ==================== -->
+        <div class="phase"><span>🔧 Phase 3 — Debugging & Fixes</span></div>
+
+        <div class="timeline">
+
+            <div class="item">
+                <div class="dot yellow"></div>
+                <span class="timestamp">1:34 PM <span class="tag tag-debug">DEBUG</span></span>
+                <div class="content">
+                    <div class="prompt-text">no data in this can i add some?</div>
+                    <div class="error-note">CONTEXT: User encountered SSL error with MongoDB connection.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot green"></div>
+                <span class="timestamp">1:45 PM <span class="tag tag-feature">FEATURE</span></span>
+                <div class="content">
+                    <div class="prompt-text">credential can be copied in input use modular component to field</div>
+                    <div class="context-note">→ Redesigned login page with clickable credential cards that auto-fill
+                        email/password with visual "Filled! ✓" feedback.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot yellow"></div>
+                <span class="timestamp">2:03 PM <span class="tag tag-config">CONFIG</span></span>
+                <div class="content">
+                    <div class="prompt-text">i am deploying to vercel is it write value authurl is correct?</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot red"></div>
+                <span class="timestamp">2:07 PM <span class="tag tag-debug">DEBUG</span></span>
+                <div class="content">
+                    <div class="prompt-text">[Pasted Error Log] POST https://scam-shield.../api/analyze 500 (Internal
+                        Server Error)</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot red"></div>
+                <span class="timestamp">2:09 PM <span class="tag tag-debug">DEBUG</span></span>
+                <div class="content">
+                    <div class="prompt-text">[Pasted Error Log] Error: 429 You exceeded your current quota...</div>
+                    <div class="error-note">→ OpenAI API quota exhausted. Triggered switch to Gemini AI.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot yellow"></div>
+                <span class="timestamp">2:11 PM <span class="tag tag-config">CONFIG</span></span>
+                <div class="content">
+                    <div class="prompt-text">in env a varible i will use gemini ai key or open ai key</div>
+                    <div class="context-note">→ Refactored AI engine to support both Gemini (primary) and OpenAI
+                        (fallback).</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot yellow"></div>
+                <span class="timestamp">2:12 PM <span class="tag tag-config">CONFIG</span></span>
+                <div class="content">
+                    <div class="prompt-text">put gemeini ai key in env</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot yellow"></div>
+                <span class="timestamp">2:15 PM <span class="tag tag-config">CONFIG</span></span>
+                <div class="content">
+                    <div class="prompt-text">[Pasted Gemini API Key] AIzaSyCQxd...</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot red"></div>
+                <span class="timestamp">2:18 PM <span class="tag tag-debug">DEBUG</span></span>
+                <div class="content">
+                    <div class="prompt-text">[Pasted Error Log] "error": "Failed to analyze message", "details": "...SSL
+                        routines:ssl3_read_bytes..."</div>
+                    <div class="error-note">→ MongoDB SSL error. Fixed by updating Atlas Network Access to allow Vercel
+                        IPs.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot yellow"></div>
+                <span class="timestamp">2:21 PM <span class="tag tag-config">CONFIG</span></span>
+                <div class="content">
+                    <div class="prompt-text">added by default use GEMNI AI</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== PHASE 4: AI ENHANCEMENT ==================== -->
+        <div class="phase"><span>🧠 Phase 4 — AI Intelligence Upgrade</span></div>
+
+        <div class="timeline">
+
+            <div class="item">
+                <div class="dot green"></div>
+                <span class="timestamp">2:30 PM <span class="tag tag-feature">FEATURE</span></span>
+                <div class="content">
+                    <div class="prompt-text">if grammer is wrong can be scammer naa
+
+                        check all scenrio and fix it will used by 2 million</div>
+                    <div class="context-note">→ Completely rebuilt AI engine with 7 specialized detection modules:
+                        Grammar Analysis, Social Engineering, Threats & Authority, Financial Scams, Urgency & Pressure,
+                        Job Scams, and Message Anomalies.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot red"></div>
+                <span class="timestamp">2:45 PM <span class="tag tag-fix">FIX</span></span>
+                <div class="content">
+                    <div class="prompt-text">see 6. RECOMMENDED ACTIONS:
+                        1. Do NOT respond to the sender
+                        2. Do NOT share any personal information
+
+                        point 1 start with spacing why</div>
+                    <div class="context-note">→ Fixed FIR template indentation bug in the action steps formatting.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot green"></div>
+                <span class="timestamp">3:00 PM <span class="tag tag-feature">FEATURE</span></span>
+                <div class="content">
+                    <div class="prompt-text">this i got a mail in email its still detact scam</div>
+                    <div class="context-note">→ Added Legitimacy Detection Module (8th layer) to prevent false positives
+                        on real emails from Google, SBI, Amazon, etc. with trusted domain verification.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">3:10 PM <span class="tag tag-debug">DEBUG</span></span>
+                <div class="content">
+                    <div class="prompt-text">test message email</div>
+                    <div class="context-note">→ Ran API test with Google security alert email. Result: isScam=false,
+                        confidence=0%, category="Legitimate Notification" ✅</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== PHASE 5: UI/UX REDESIGN ==================== -->
+        <div class="phase"><span>🎨 Phase 5 — Premium UI/UX Redesign</span></div>
+
+        <div class="timeline">
+
+            <div class="item">
+                <div class="dot red"></div>
+                <span class="timestamp">3:20 PM <span class="tag tag-fix">FIX</span></span>
+                <div class="content">
+                    <div class="prompt-text">test is not visible much</div>
+                    <div class="context-note">→ Fixed dashboard chart text visibility by replacing faint #94a3b8 colors
+                        with bright #CBD5E1 and #E2E8F0.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot purple"></div>
+                <span class="timestamp">3:30 PM <span class="tag tag-ui">UI/UX</span></span>
+                <div class="content">
+                    <div class="prompt-text">redisgn ui ux should be scalable best mobile friendly</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot purple"></div>
+                <span class="timestamp">3:35 PM <span class="tag tag-ui">UI/UX</span></span>
+                <div class="content">
+                    <div class="prompt-text">redisgn change font and all this should premium feel look wise eye catching
+                        use good color theme shadcn framer or any good libarary</div>
+                    <div class="context-note">→ Complete premium redesign: Space Grotesk + Inter + JetBrains Mono fonts,
+                        glassmorphism cards, animated gradients, responsive breakpoints, custom scrollbars.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot green"></div>
+                <span class="timestamp">3:50 PM <span class="tag tag-feature">FEATURE</span></span>
+                <div class="content">
+                    <div class="prompt-text">email should have extra field sender email i think this will give extra
+                        accuracy</div>
+                    <div class="context-note">→ Added sender email field to UI, API, MongoDB model, and AI engine.
+                        Integrated domain verification for detecting spoofed vs legitimate senders.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot purple"></div>
+                <span class="timestamp">3:55 PM <span class="tag tag-ui">UI/UX</span></span>
+                <div class="content">
+                    <div class="prompt-text">i want these sections too in homepage</div>
+                    <div class="context-note">→ Added "What is ScamShield AI?", "How it Works", "What can it Detect?"
+                        (12 scam categories), and "Important Resources" (helpline 1930, cybercrime.gov.in) sections.
+                    </div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot purple"></div>
+                <span class="timestamp">4:05 PM <span class="tag tag-ui">UI/UX</span></span>
+                <div class="content">
+                    <div class="prompt-text">blank space not looks good can you put some element or animation or
+                        something ux should be priority</div>
+                    <div class="context-note">→ Added animated floating orbs, hero grid background, live stats ticker
+                        with counter animation, and responsive hero padding using clamp().</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== PHASE 6: DOCUMENTATION ==================== -->
+        <div class="phase"><span>📄 Phase 6 — Documentation & Submission Prep</span></div>
+
+        <div class="timeline">
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">3:44 PM <span class="tag tag-docs">DOCS</span></span>
+                <div class="content">
+                    <div class="prompt-text">i want project overview what departments is doing why those pages</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">3:44 PM <span class="tag tag-docs">DOCS</span></span>
+                <div class="content">
+                    <div class="prompt-text">workflow ?</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">3:45 PM <span class="tag tag-docs">DOCS</span></span>
+                <div class="content">
+                    <div class="prompt-text">You must submit: [Requirements Checklist]... is my project fullfilled y
+                        below requirements ?</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">3:46 PM <span class="tag tag-docs">DOCS</span></span>
+                <div class="content">
+                    <div class="prompt-text">Record Video: Do a 3-minute screen recording showing... i want transcript
+                        for 3 minute i will read that</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">3:48 PM <span class="tag tag-docs">DOCS</span></span>
+                <div class="content">
+                    <div class="prompt-text">i want all the prompts all in .html file and i will screenshot and post on
+                        insta</div>
+                    <div class="context-note">→ Created prompts.html (AI system prompts showcase) and user_history.html
+                        (this file).</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== PHASE 7: DASHBOARD ENHANCEMENTS ==================== -->
+        <div class="phase"><span>🏛️ Phase 7 — Dashboard & Final Features</span></div>
+
+        <div class="timeline">
+
+            <div class="item">
+                <div class="dot green"></div>
+                <span class="timestamp">4:10 PM <span class="tag tag-feature">FEATURE</span></span>
+                <div class="content">
+                    <div class="prompt-text">Update Dashboard: Add the new senderEmail field to the Department Dashboard
+                        case list?
+                        PDF Export: Implement a "Download FIR as PDF" feature?
+                        Test: Run a full test case?
+
+                        an departmend flag green an sender email</div>
+                    <div class="context-note">→ Added Sender Email column, visual Risk Flag (🟢 Safe / 🔴 Scam / 🟡
+                        Risk) shield indicators to the department dashboard case table. Updated analytics API to include
+                        senderEmail.</div>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="dot blue"></div>
+                <span class="timestamp">4:14 PM <span class="tag tag-docs">DOCS</span></span>
+                <div class="content">
+                    <div class="prompt-text">i want prompt history i gave to you from 10 am</div>
+                    <div class="context-note">→ Updated this prompt history file with the complete development timeline.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>ScamShield AI</strong> — Built at Vibe-A-Thon 2026</p>
+            <p style="margin-top: 6px;">100% AI-Assisted Development • Codebucket Solutions Pvt. Ltd.</p>
+            <p style="margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #4b5563;">
+                Last updated: 15 Feb 2026, 4:14 PM IST
+            </p>
+        </div>
+
+    </div>
+</body>
+
+</html>

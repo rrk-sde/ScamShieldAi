@@ -29,6 +29,7 @@ interface ScamCaseRow {
     submittedBy: string;
     senderEmail?: string;
     messageType: string;
+    fraudCategory: string;
     analysis: {
         isScam: boolean;
         confidence: number;
@@ -459,10 +460,18 @@ export default function DepartmentDashboard() {
                                 <table className="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Assessment</th>
-                                            <th>Case ID</th>
-                                            <th>Sender / Source</th>
-                                            <th>Submitted By</th>
+                                            <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">
+                                                Flag
+                                            </th>
+                                            <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">
+                                                Case ID
+                                            </th>
+                                            <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">
+                                                Sender
+                                            </th>
+                                            <th className="px-6 py-4 text-left text-xs font-semibold text-[var(--accent)] uppercase tracking-wider">
+                                                Submitted By
+                                            </th>
                                             <th>Category</th>
                                             <th>Risk</th>
                                             <th>Confidence</th>
@@ -474,28 +483,39 @@ export default function DepartmentDashboard() {
                                     <tbody>
                                         {cases.map((c) => (
                                             <tr key={c._id}>
-                                                <td>
-                                                    {c.analysis.isScam ? (
-                                                        <div title="High Risk / Scam" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--danger)', fontWeight: 600, fontSize: 12 }}>
-                                                            <ShieldAlert size={16} />
-                                                            <span className="hide-mobile">Scam</span>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    {c.analysis.riskLevel === 'critical' || c.analysis.riskLevel === 'high' ? (
+                                                        <div className="flex items-center text-red-400" title="High Risk / Scam">
+                                                            <ShieldAlert size={18} className="mr-1" />
+                                                            <span className="text-xs font-bold">SCAM</span>
+                                                        </div>
+                                                    ) : c.fraudCategory === 'Legitimate Notification' ? (
+                                                        <div className="flex items-center text-green-400" title="Safe / Verified">
+                                                            <ShieldCheck size={18} className="mr-1" />
+                                                            <span className="text-xs font-bold">SAFE</span>
                                                         </div>
                                                     ) : (
-                                                        <div title="Safe / Verified" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--success)', fontWeight: 600, fontSize: 12 }}>
-                                                            <ShieldCheck size={16} />
-                                                            <span className="hide-mobile">Safe</span>
+                                                        <div className="flex items-center text-yellow-400" title="Potential Risk">
+                                                            <AlertTriangle size={18} className="mr-1" />
+                                                            <span className="text-xs font-bold">RISK</span>
                                                         </div>
                                                     )}
                                                 </td>
-                                                <td className="mono" style={{ fontWeight: 600, fontSize: 13 }}>{c.caseId}</td>
-                                                <td style={{ fontSize: 13 }}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-[var(--text-secondary)]">
+                                                    {c.caseId}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-primary)]">
                                                     {c.senderEmail ? (
-                                                        <span style={{ fontFamily: 'monospace', color: 'var(--text-primary)' }}>{c.senderEmail}</span>
+                                                        <span className="font-mono text-xs bg-[var(--bg-secondary)] px-2 py-1 rounded border border-[var(--border)]">
+                                                            {c.senderEmail}
+                                                        </span>
                                                     ) : (
-                                                        <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>-</span>
+                                                        <span className="text-[var(--text-muted)]">-</span>
                                                     )}
                                                 </td>
-                                                <td>{c.submittedBy}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-primary)]">
+                                                    {c.submittedBy}
+                                                </td>
                                                 <td style={{ fontSize: 13 }}>{c.analysis.fraudCategory}</td>
                                                 <td>
                                                     <span className={`risk-${c.analysis.riskLevel}`} style={{ padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, textTransform: 'uppercase' }}>
