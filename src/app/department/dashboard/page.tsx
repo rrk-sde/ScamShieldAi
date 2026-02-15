@@ -683,7 +683,7 @@ export default function DepartmentDashboard() {
                                         </Pie>
                                         <Tooltip
                                             contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 8, color: 'var(--text-primary)' }}
-                                            formatter={(value: number, name: string) => [`${value} cases`, name]}
+                                            formatter={((value: any, name: any) => [`${value} cases`, name]) as any}
                                         />
                                         <Legend
                                             layout="horizontal"
