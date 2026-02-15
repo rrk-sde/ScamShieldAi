@@ -95,7 +95,7 @@ export default function HomePage() {
         if (data.success) setNewsfeed(data.news);
         setNewsLoading(false);
       })
-      .catch(err => setNewsLoading(false));
+      .catch(() => setNewsLoading(false));
   }, []);
 
   const handleAnalyze = async (e: React.FormEvent) => {
@@ -956,7 +956,7 @@ export default function HomePage() {
                 </div>
                 <h3 style={{ fontSize: 24, fontWeight: 800, color: '#EF4444', marginBottom: 8 }}>Helpline 1930</h3>
                 <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 24 }}>
-                  Dial 1930 immediately if you have lost money to cyber fraud. The "Golden Hour" reporting can help freeze funds.
+                  Dial 1930 immediately if you have lost money to cyber fraud. The &quot;Golden Hour&quot; reporting can help freeze funds.
                 </p>
                 <a href="tel:1930" className="btn-primary" style={{
                   background: 'var(--danger)', width: '100%', justifyContent: 'center', padding: '16px',

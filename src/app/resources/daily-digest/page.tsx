@@ -141,7 +141,7 @@ export default function DailyDigestPage() {
                                     </div>
 
                                     {/* Desktop Button */}
-                                    <div style={{ alignSelf: 'center', display: 'none', md: { display: 'block' } }}> {/* Logic handled by CSS media query usually, for now we assume desktop or stack */}
+                                    <div className="hide-mobile" style={{ alignSelf: 'center' }}>
                                         <button className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
                                             <Download size={16} /> Download
                                         </button>
